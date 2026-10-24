@@ -8,20 +8,20 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
-      - uses: actions/setup-java@v4
+      - uses: actions/setup-java@v5
         with:
           distribution: temurin
           java-version: '25'
-          cache: maven
-          cache-dependency-path: LimiterPlugin/pom.xml
 
       - name: Compiler
-        run: mvn -B package
-        working-directory: LimiterPlugin
+        run: |
+          POM=$(find . -name pom.xml -not -path './.git/*' | head -n1)
+          echo "pom.xml trouvé : $POM"
+          mvn -B -f "$POM" package
 
       - uses: actions/upload-artifact@v4
         with:
           name: LimiterPlugin
-          path: LimiterPlugin/target/LimiterPlugin.jar
+          path: '**/target/LimiterPlugin.jar'
